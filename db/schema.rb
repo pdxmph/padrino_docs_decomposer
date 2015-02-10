@@ -11,16 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 5) do
+ActiveRecord::Schema.define(version: 7) do
 
   create_table "elements", force: :cascade do |t|
-    t.string   "hash"
     t.integer  "kind"
     t.integer  "page_id"
     t.string   "filename"
     t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "checksum"
   end
 
   create_table "pages", force: :cascade do |t|
