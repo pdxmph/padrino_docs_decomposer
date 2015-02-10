@@ -1,0 +1,9 @@
+---
+:orm: activerecord
+:test: none
+:mock: none
+:script: jquery
+:renderer: haml
+:stylesheet: none
+:namespace: DocsDecomposer
+:migration_format: number
