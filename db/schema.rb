@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 3) do
+ActiveRecord::Schema.define(version: 5) do
 
   create_table "elements", force: :cascade do |t|
     t.string   "hash"
@@ -25,13 +25,13 @@ ActiveRecord::Schema.define(version: 3) do
 
   create_table "pages", force: :cascade do |t|
     t.string   "title"
-    t.float    "version"
     t.integer  "user_id"
     t.text     "content"
     t.string   "url"
     t.string   "filename"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "version"
   end
 
   create_table "ratings", force: :cascade do |t|
