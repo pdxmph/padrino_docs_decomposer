@@ -1,0 +1,10 @@
+- @title = "Pages"
+
+%h1 A List of Pages
+
+- @pages.each do |p|
+  %a{:href => "/page/#{p.id}"}
+    =p.title
+  %br
+
+  

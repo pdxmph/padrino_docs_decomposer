@@ -1,0 +1,14 @@
+- @title = @page.title
+
+%h1= @page.title
+
+%h2 Elements
+= @page.elements.count
+
+%h2 Literal Elements
+- @page.elements.each do |e|
+  %div{:style => "border:1px solid #ccc;padding:1em;margin-bottom:2em;"}
+    !=e.content
+
+
+    

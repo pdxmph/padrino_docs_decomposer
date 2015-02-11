@@ -3,7 +3,7 @@ pages = Page.all
 # xpath for all headings
 # /html/body/*[self::h1 or self::h2 or self::h3]/text()
 
-elements = ["ol","ul","pre","img"]
+elements = ["ol","pre","img"]
 
 pages.each do |p|
 
@@ -11,7 +11,7 @@ pages.each do |p|
 
   elements.each do |e|
   html.xpath("//section[contains(@id,'content')]//#{e}").each do |h|
-    next if h['class'] == "toc"
+    next if h['class'] == "toc" 
     hash = Digest::MD5.hexdigest(h)
     element = Element.new
     element.checksum = hash
