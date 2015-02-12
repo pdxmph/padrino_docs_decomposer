@@ -1,14 +1,170 @@
 - @title = @page.title
 
 %h1= @page.title
+%br
+  %strong List, figure and code elements on page:
+  = @page.elements.count
+%br
 
-%h2 Elements
-= @page.elements.count
+%div.btngroup
+  %button.btn{:onclick => "decompose()"}
+    Decompose    
+  
+  %button.btn{:onclick => "recompose()"}
+    Recompose    
+  
+  %button.btn{:onclick => "hide_toc()"}
+    Hide ToC
 
-%h2 Literal Elements
-- @page.elements.each do |e|
-  %div{:style => "border:1px solid #ccc;padding:1em;margin-bottom:2em;"}
-    !=e.content
-
-
+  %button.btn{:onclick => "heads_only()"}
+    Heads Only
     
+%br
+    
+%ul{:class => "nav nav-tabs"}
+  %li{:class => "active"}
+    %a{:href => "#page-content", "data-toggle" => "tab"}
+      Content
+  %li
+    %a{:href => "#page-elements", "data-toggle" => "tab"}
+      Elements
+
+  %li
+    %a{:href => "#page-ignored", "data-toggle" => "tab"}
+      Ignored Elements
+
+      
+%div{:class => "tab-content", :id => "tab-content"}
+  %div{:class => "tab-pane active", :id => "page-content"}
+    %div{:id => "page-content"}
+      != @page.content
+  %div{:class => "tab-pane", :id => "page-elements"}
+    - @page.elements.where("ignored IS NOT ?", true).each do |e|
+      %div{:id => e.checksum}
+        - cousins = Element.where("checksum = ?", e.checksum)
+        - if cousins.count > 1
+          %strong
+            = "This element appears #{cousins.count} times in the docs."
+            %a{:href => "/element/#{e.checksum}"}
+              (See where)
+            %br
+            
+        %div.well
+          != e.content
+        %div.btngroup  
+          - if e.flagged == true
+            %button.btn.btn-warning{:onclick => "toggle_flag('#{e.checksum}','unflag')", :id => "flag_button_#{e.checksum}"}
+              Unflag This
+          - else
+            %button.btn.btn-danger{:onclick => "toggle_flag('#{e.checksum}', 'flag')", :id => "flag_button_#{e.checksum}"}
+              Flag This
+    
+          %br{:style => "clear:all;"}
+        %br
+        %hr          
+
+  %div{:class => "tab-pane", :id => "page-ignored"}
+
+
+:javascript
+  function toggle_flag(checksum,state) {
+  if (state == "flag") {
+            $('#flag_button_' + checksum).attr('class','btn btn-success');
+            $('#flag_button_' + checksum).attr('onclick','toggle_flag("' + checksum + '",'unflag');
+            $('#flag_button_' + checksum).html('Unflag This');
+     } else {
+            $('#flag_button_' + checksum).attr('class','btn btn-danger');
+            $('#flag_button_' + checksum).attr('onclick','toggle_flag("' + checksum + '",'flag');
+            $('#flag_button_' + checksum).html('Flag This');
+     }
+     };
+
+            
+:javascript
+  $(function () {
+    $('#myTab a:last').tab('show');
+  })
+
+:javascript
+
+  function decompose() {
+    var hide_elements=['p','blockquote'];
+    var show_elements=['h1','h2','h3','h4','pre','ol'];
+    $('#page-content ' + hide_elements).hide();
+    $('.toc').hide();
+    $('#tab-content li').children().show();
+    $('body ul.nav').show();
+  };
+
+  function recompose() {
+    var hide_elements=['p','ul'];
+    var show_elements=['h1','h2','h3','h4','pre','ol','h2','h3'];
+    $('#tab-content ' + hide_elements).show();
+    $('#tab-content ' + show_elements).show();
+  };
+
+  function hide_toc() {
+    $('div.primary-content .toc').hide();
+  };
+
+  function heads_only() {
+  var hide_elements=['p', 'blockquote', 'ol', 'ul', 'pre'];
+  var show_elements=['h1','h2','h3','h4', 'h5']
+
+  $('#tab-content ' + hide_elements).hide();
+  $('#tab-content ' + show_elements).show();
+  $('body ul.nav').show();
+  };
+
+  function flag_element(checksum) {
+    $.ajax({
+      url: '/element/' + checksum + '/flag',
+      type: "get", 
+      success: function(res) {
+      console.log(res)
+        }
+    });
+    };
+
+    function unflag_element(checksum) {
+    $('#flagged_button_' + checksum).attr('class','btn btn-danger');
+    $('#flagged_button_' + checksum).attr('onclick','flag_element("' + checksum + '")');
+    $('#flagged_button_' + checksum).html('Flag This');
+
+    $.ajax({
+      url: '/element/' + checksum + '/unflag',
+      type: "get", 
+      success: function(res) {
+      console.log(res)
+        }
+        });
+
+
+  };
+
+
+    function ignore_element(checksum) {
+    $.ajax({
+      url: '/element/' + checksum + '/ignore',
+      type: "get", 
+      success: function(res) {
+      console.log(res)
+        }
+    });
+    $('#' + checksum).appendTo("#tab4");
+    };
+
+    function unignore_element(checksum) {
+    $.ajax({
+      url: '/element/' + checksum + '/unignore',
+      type: "get", 
+      success: function(res) {
+      console.log(res)
+        }
+    });
+    $('#' + checksum).fadeOut();
+    };
+
+
+    function toggle_ignore(checksum,state) {
+    };

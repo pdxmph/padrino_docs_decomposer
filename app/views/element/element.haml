@@ -1,0 +1,10 @@
+.well
+  != @element.content
+
+%ul
+ 
+  - @elements.each do |e|
+    %li
+      %a{:href => "/page/#{e.page.id}"}
+        = e.page.title
+  

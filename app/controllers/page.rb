@@ -29,7 +29,8 @@ DocsDecomposer::App.controllers :page do
   end
   
   get '/version/:version' do
-        @pages = Page.where("version =?", params[:version])
+    @pages = Page.where("version =?", params[:version])
     render 'index'
   end   
-  end
+
+end
